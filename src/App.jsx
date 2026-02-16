@@ -28,8 +28,9 @@ export default function App() {
   const handleFormSubmit = (e) => {
     e.preventDefault();
 
-    axios.post(apiUrl).then((res) => {
-      console.log('Richiesta inviata ' + res.data);
+    axios.post(apiUrl, formData).then((res) => {
+      console.log('Richiesta inviata ', res.data);
+      setFormData(initialFormData);
     });
   };
 
