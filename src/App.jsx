@@ -10,15 +10,28 @@ const initialFormData = {
   author: '',
   title: '',
   body: '',
-  public: false,
+  public: false, // false = bozza,
 };
 
 export default function App() {
-  axios.post(apiUrl).then((res) => {
-    console.log(res.data);
-  });
-
   const [formData, setFormData] = useState(initialFormData);
+
+  const handleFormChange = (e) => {
+    const { name, value, type, checked } = e.target;
+
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value,
+    });
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+
+    axios.post(apiUrl).then((res) => {
+      console.log('Richiesta inviata ' + res.data);
+    });
+  };
 
   return (
     <>
@@ -26,7 +39,7 @@ export default function App() {
         <h1 className="text-center mt-5">Libri</h1>
         <div className="row">
           <div className="col">
-            <form>
+            <form onSubmit={handleFormSubmit}>
               <div className="mb-3">
                 <label
                   htmlFor="exampleFormControlInput1"
@@ -35,8 +48,11 @@ export default function App() {
                   Author
                 </label>
                 <input
-                  type="email"
-                  class="form-control"
+                  type="text"
+                  name="author"
+                  value={formData.author}
+                  onChange={handleFormChange}
+                  className="form-control"
                   id="exampleFormControlInput1"
                   placeholder="Inserisci il nome autore"
                 />
@@ -49,26 +65,16 @@ export default function App() {
                   Title
                 </label>
                 <input
-                  type="email"
-                  class="form-control"
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleFormChange}
+                  className="form-control"
                   id="exampleFormControlInput1"
                   placeholder="Inserisci il titolo del libro"
                 />
               </div>
-              <div className="mb-3">
-                <label
-                  htmlFor="exampleFormControlInput1"
-                  className="form-label"
-                >
-                  Email address
-                </label>
-                <input
-                  type="email"
-                  class="form-control"
-                  id="exampleFormControlInput1"
-                  placeholder="Inserisci la tua email"
-                />
-              </div>
+
               <div className="mb-3">
                 <label
                   htmlFor="exampleFormControlTextarea1"
@@ -78,24 +84,20 @@ export default function App() {
                 </label>
                 <textarea
                   className="form-control"
+                  name="body"
+                  value={formData.body}
+                  onChange={handleFormChange}
                   id="exampleFormControlTextarea1"
                   rows="3"
                   placeholder="Inserisci la descrizione del libro"
                 ></textarea>
               </div>
+
               <div className="form-check">
                 <input
-                  className="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="checkDefault"
-                />
-                <label className="form-check-label" htmlFor="checkDefault">
-                  Bozza
-                </label>
-              </div>
-              <div className="form-check">
-                <input
+                  name="public"
+                  checked={formData.public}
+                  onChange={handleFormChange}
                   className="form-check-input"
                   type="checkbox"
                   value=""
@@ -106,7 +108,7 @@ export default function App() {
                 </label>
               </div>
               <div>
-                <button type="submit" class=" mt-4 btn btn-primary">
+                <button type="submit" className=" mt-4 btn btn-primary">
                   Invia
                 </button>
               </div>
